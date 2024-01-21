@@ -1,11 +1,23 @@
 from tkinter import *
 import os
 import shutil
+from tkinter import filedialog
+
 
 root = Tk()
 root.title("ADVANCE FILE MANAGER")
 root.geometry("1255x944")
 root.wm_iconbitmap("AFM.ico")
+
+def open_folder_dialog():
+    folder_path = filedialog.askdirectory(title="Choose a folder")
+    if folder_path:
+        # Normalize the path to remove redundant separators
+        folder_path = os.path.normpath(folder_path)
+        # Update the entry field with the selected folder path
+        entry_var.set(folder_path)
+        # Do something with the selected folder path
+        print("Selected folder:", folder_path)
 
 def manageFiles():
     i=0
@@ -15,11 +27,11 @@ def manageFiles():
     'document' : ('.docx', '.jpeg', '.jpg', '.pdf', '.txt', '.zip', '.bmp', '.pub', '.rar', '.pptx', '.accdb'),
     }
     output_content.insert(END, '################################################  BEFORE ARRANGE  ################################################# \n\n\n')
-    path = folder_path.get()
-    if os.path.exists('R:\\Arrange'):
+    path = entry_var.get()
+    if os.path.exists('E:\\Arrange'):
         print('already')
     else:
-        os.mkdir('R:\\Arrange')
+        os.mkdir('E:\\Arrange')
     fileiter = os.walk(path)
     for current_path, folder_name, file_name in fileiter:
         print(f'current path : {current_path}')
@@ -33,13 +45,13 @@ def manageFiles():
                 for i in range(len(values)):
                     if file.endswith(values[i]):
                         val = values[i].replace(".", "")
-                        if os.path.exists('R:\\Arrange' + "\\" + val):
+                        if os.path.exists('E:\\Arrange' + "\\" + val):
                             pass
                         else:
-                            os.mkdir('R:\\Arrange' + "\\" + val)
-                        shutil.copy(current_path + '\\' + file,'R:\\Arrange' + '\\' + val + '\\' + file)
+                            os.mkdir('E:\\Arrange' + "\\" + val)
+                        shutil.copy(current_path + '\\' + file,'E:\\Arrange' + '\\' + val + '\\' + file)
     output_content.insert(END, '################################################  AFTER ARRANGE  ################################################# \n\n\n')
-    fileiter = os.walk('R:\\Arrange')
+    fileiter = os.walk('E:\\Arrange')
     for current_path, folder_name, file_name in fileiter:
         print(f'current path : {current_path}')
         print(f'folder name : {folder_name}')
@@ -65,9 +77,13 @@ about.insert(END,"You can easily manage your files by the use of this software.\
 l = Label(f2, text="Enter Folder Path",bg="#191970" , fg="white", padx=13, pady=8, font="comicsansms 20 bold", borderwidth=0, relief=RIDGE )
 l.pack(padx=200, pady=10)
 
-folder_path = StringVar()
-enter_path = Entry(f2,textvariable = folder_path, bg="white" ,width=30, fg="black", font="comicsansms 20 bold", borderwidth=0, relief=RIDGE)
+entry_var = StringVar()
+enter_path = Entry(f2,textvariable = entry_var, bg="white" ,width=30, fg="black", font="comicsansms 20 bold", borderwidth=0, relief=RIDGE)
 enter_path.pack(pady=10)
+    
+# Create a button to open the folder dialog
+button = Button(f2, text="Choose Folder", command=open_folder_dialog, font="comicsansms 10 bold")
+button.pack(padx=200)
     
 start = Button(f2,command=manageFiles, text="START",bg="#00008B" , fg="white", padx=6, pady=2, font="comicsansms 16 bold", borderwidth=2, relief=RIDGE )
 start.pack(pady=20)
